@@ -139,8 +139,19 @@ func TestDatastore_Persist(t *testing.T) {
 			if f, err := os.Open(file_path); err != nil {
 				t.Errorf("Error has ocuured in Datastore.Persist(); error = %v", err.Error())
 			} else {
-				f.Read([]byte{})
+				buf := make([]byte, 1024)
+				c, err2 := f.Read(buf)
+				if err2 != nil {
+					t.Errorf(err2.Error())
+				}
+				want := "hoge=fuga;foo=bar;"
+				if content := string(buf[:c]); content != want {
+					t.Errorf("Datastore.Persist(), file content = %v, want = %v", content, want)
+				}
 			}
+			defer func() {
+				os.Remove(file_path)
+			}()
 		})
 	}
 }
