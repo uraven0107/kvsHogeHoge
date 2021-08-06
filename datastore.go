@@ -6,11 +6,13 @@ import (
 )
 
 type Datastore struct {
+	name  string
 	store map[string]string
 }
 
-func NewDatastore() *Datastore {
+func NewDatastore(name string) *Datastore {
 	ds := new(Datastore)
+	ds.name = name
 	ds.store = make(map[string]string)
 	return ds
 }
@@ -37,11 +39,13 @@ func (ds *Datastore) Persist(file_path string) {
 	if err != nil {
 		fmt.Errorf(err.Error())
 	} else {
+		var str string
 		for k, v := range ds.store {
-			str := k + "=" + v + ";"
-			if _, err2 := f.Write([]byte(str)); err2 != nil {
-				fmt.Errorf(err.Error())
-			}
+			str = str + k + "=" + v + ";"
+		}
+		str = ds.name + "={" + str + "};"
+		if _, err2 := f.Write([]byte(str)); err2 != nil {
+			fmt.Errorf(err.Error())
 		}
 	}
 	defer f.Close()

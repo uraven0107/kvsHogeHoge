@@ -18,7 +18,7 @@ func TestDatastore_Write(t *testing.T) {
 	}{
 		{
 			name: "canWrite",
-			ds:   NewDatastore(),
+			ds:   NewDatastore("test"),
 			args_list: []args{
 				{
 					key:   "hoge",
@@ -57,7 +57,7 @@ func TestDatastore_Read(t *testing.T) {
 	}{
 		{
 			name: "canRead",
-			ds:   NewDatastore(),
+			ds:   NewDatastore("test"),
 			argsAndWants: []argAndWant{
 				{
 					key:  "hoge",
@@ -96,7 +96,7 @@ func TestDatastore_Delete(t *testing.T) {
 	}{
 		{
 			name: "canDelete",
-			ds:   NewDatastore(),
+			ds:   NewDatastore("test"),
 			args: args{
 				key: "hoge",
 			},
@@ -127,7 +127,7 @@ func TestDatastore_Persist(t *testing.T) {
 	}{
 		{
 			name: "canPersist",
-			ds:   NewDatastore(),
+			ds:   NewDatastore("test"),
 		},
 	}
 	for _, tt := range tests {
@@ -144,7 +144,7 @@ func TestDatastore_Persist(t *testing.T) {
 				if err2 != nil {
 					t.Errorf(err2.Error())
 				}
-				want := "hoge=fuga;foo=bar;"
+				want := ds.name + "={hoge=fuga;foo=bar;};"
 				if content := string(buf[:c]); content != want {
 					t.Errorf("Datastore.Persist(), file content = %v, want = %v", content, want)
 				}
