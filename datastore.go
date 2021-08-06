@@ -50,3 +50,13 @@ func (ds *Datastore) Persist(file_path string) {
 	}
 	defer f.Close()
 }
+
+func Restore(file_path string) *Datastore {
+	ds := Datastore{
+		name:  "test",
+		store: make(map[string]string),
+	}
+	ds.Write("hoge", "fuga")
+	ds.Write("foo", "bar")
+	return &ds
+}
