@@ -39,7 +39,7 @@ func TestDatastore_Write(t *testing.T) {
 				ds.Write(args.key, args.value)
 			}
 			if got := ds.Size(); got != tt.want {
-				t.Errorf("Datastore.Size() = %v, want %v", got, tt.want)
+				t.Errorf(":( Datastore.Size() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -77,7 +77,7 @@ func TestDatastore_Read(t *testing.T) {
 			ds.Write("foo", "bar")
 			for _, argAndWant := range tt.argsAndWants {
 				if got := ds.Read(argAndWant.key); got != argAndWant.want {
-					t.Errorf("Datastore.Read() = %v, want %v", got, argAndWant.want)
+					t.Errorf(":( Datastore.Read() = %v, want %v", got, argAndWant.want)
 				}
 			}
 		})
@@ -110,10 +110,10 @@ func TestDatastore_Delete(t *testing.T) {
 			ds.Write("foo", "bar")
 			ds.Delete("hoge")
 			if got := ds.Read(tt.args.key); got != "" {
-				t.Errorf("Datastore.Delete() = %v, want %v", got, nil)
+				t.Errorf(":( Datastore.Delete() = %v, want %v", got, nil)
 			}
 			if got := ds.Size(); got != tt.want_size {
-				t.Errorf("Datastore.Size() = %v, want %v", got, tt.want_size)
+				t.Errorf(":( Datastore.Size() = %v, want %v", got, tt.want_size)
 			}
 		})
 	}
@@ -136,10 +136,10 @@ func TestDatastore_Persist(t *testing.T) {
 			ds.Write("hoge", "fuga")
 			ds.Write("foo", "bar")
 			if err := ds.Persist(file_path); err != nil {
-				t.Errorf("Error has ocuured in Datastore.Persist(); error = %v", err.Error())
+				t.Errorf(":( Error has ocuured in Datastore.Persist(); error = %v", err.Error())
 			}
 			if f, err := os.Open(file_path); err != nil {
-				t.Errorf("Error has ocuured in os.Open(); error = %v", err.Error())
+				t.Errorf(":( Error has ocuured in os.Open(); error = %v", err.Error())
 			} else {
 				buf := make([]byte, 1024)
 				c, err2 := f.Read(buf)
@@ -148,7 +148,7 @@ func TestDatastore_Persist(t *testing.T) {
 				}
 				want := ds.name + "={hoge=fuga;foo=bar;};"
 				if content := string(buf[:c]); content != want {
-					t.Errorf("Datastore.Persist(), file content = %v, want = %v", content, want)
+					t.Errorf(":( Datastore.Persist(), file content = %v, want = %v", content, want)
 				}
 			}
 			defer func() {
@@ -189,7 +189,7 @@ func TestDatastore_Restore(t *testing.T) {
 			ds := Restore(file_path)
 			for _, argAndWant := range tt.argsAndWants {
 				if got := ds.Read(argAndWant.key); got != argAndWant.want {
-					t.Errorf("Datastore.Read() = %v, want %v", got, argAndWant.want)
+					t.Errorf(":( Datastore.Read() = %v, want %v", got, argAndWant.want)
 				}
 			}
 		})
