@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -33,22 +32,23 @@ func (ds *Datastore) Delete(key string) {
 	delete(ds.store, key)
 }
 
-func (ds *Datastore) Persist(file_path string) {
+func (ds *Datastore) Persist(file_path string) error {
 	f, err := os.Create(file_path)
 
 	if err != nil {
-		fmt.Errorf(err.Error())
+		return err
 	} else {
 		var str string
 		for k, v := range ds.store {
 			str = str + k + "=" + v + ";"
 		}
 		str = ds.name + "={" + str + "};"
-		if _, err2 := f.Write([]byte(str)); err2 != nil {
-			fmt.Errorf(err.Error())
+		if _, err := f.Write([]byte(str)); err != nil {
+			return err
 		}
 	}
 	defer f.Close()
+	return nil
 }
 
 func Restore(file_path string) *Datastore {
