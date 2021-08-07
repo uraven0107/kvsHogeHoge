@@ -33,6 +33,9 @@ func Test_next(t *testing.T) {
 			source := "test={hoge=fuga;foo=bar;};"
 			tokenizer := NewTokenizer(source)
 			for _, want := range tt.wants {
+				if !tokenizer.hasNext() {
+					t.Errorf("hasNext() should return true.")
+				}
 				got, err := tokenizer.next()
 				if err != nil {
 					t.Errorf("Error has occured at next(). error = %v", err)
@@ -40,6 +43,9 @@ func Test_next(t *testing.T) {
 				if got != want {
 					t.Errorf("next() = %v, want %v", got, want)
 				}
+			}
+			if tokenizer.hasNext() {
+				t.Errorf("hasNext() should return false.")
 			}
 
 		})
