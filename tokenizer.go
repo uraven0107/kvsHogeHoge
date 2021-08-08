@@ -63,3 +63,16 @@ func (t *Tokenizer) next() (string, error) {
 func (t *Tokenizer) hasNext() bool {
 	return len(t.tokens) >= t.p+1
 }
+
+func (t *Tokenizer) hasPrev() bool {
+	return t.p-1 >= 0
+}
+
+func (t *Tokenizer) prev() (string, error) {
+	if !t.hasPrev() {
+		return "", errors.New(":( No such Element")
+	}
+	t.p = t.p - 1
+	str := t.tokens[t.p]
+	return str, nil
+}
