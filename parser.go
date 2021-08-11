@@ -28,6 +28,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 	value := ""
 	is_k_v_generated := false
 	is_completed := false
+	is_closed := false
 	var datastoreSource *DatastoreSource = nil
 
 	var initializer = func() {
@@ -38,6 +39,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 		key = ""
 		value = ""
 		is_k_v_generated = false
+		is_closed = false
 		is_completed = false
 		datastoreSource = nil
 	}
@@ -49,7 +51,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 		}
 
 		if token != expect && expect != "*" {
-			return nil, errors.New("Parse error occured. expected = " + expect + "but got = " + token)
+			return nil, errors.New("Parse error occured. expected = " + expect + ", but got = " + token)
 		}
 
 		if name == "" {
@@ -76,7 +78,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 		case "}":
 			expect = ";"
 		case ";":
-			if !t.hasNext() {
+			if is_closed {
 				is_completed = true
 				break
 			}
@@ -86,6 +88,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 			}
 			if next == "}" {
 				expect = ";"
+				is_closed = true
 			} else {
 				key = next
 				is_key = false

@@ -6,12 +6,12 @@ import (
 
 func Test_Expr(t *testing.T) {
 	tests := []struct {
-		name string
-		want []*DatastoreSource
+		name  string
+		wants []*DatastoreSource
 	}{
 		{
 			name: "canParse",
-			want: []*DatastoreSource{
+			wants: []*DatastoreSource{
 				&DatastoreSource{
 					name: "test",
 					k_v_map: map[string]string{
@@ -19,31 +19,39 @@ func Test_Expr(t *testing.T) {
 						"foo":  "bar",
 					},
 				},
+				&DatastoreSource{
+					name: "baka",
+					k_v_map: map[string]string{
+						"aho":  "manuke",
+						"unko": "brbr",
+						"aaa":  "bbb",
+					},
+				},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			par := NewParser(NewTokenizer("test={hoge=fuga;foo=bar;};"))
-			got, err := par.Expr()
+			par := NewParser(NewTokenizer("test={hoge=fuga;foo=bar;};baka={aho=manuke;unko=brbr;aaa=bbb;};"))
+			gots, err := par.Expr()
 			if err != nil {
 				t.Errorf("Expr() error = %v", err)
 				return
 			}
-			for _, g := range got {
+			for _, want := range tt.wants {
 				is_matched := false
-				for _, w := range tt.want {
-					if g.name == w.name {
+				for _, got := range gots {
+					if got.name == want.name {
 						is_matched = true
-						for k, v := range w.k_v_map {
-							if g.k_v_map[k] != v {
-								t.Errorf("Expr() want = %v, but got = %v", v, g.k_v_map[k])
+						for k, v := range want.k_v_map {
+							if got.k_v_map[k] != v {
+								t.Errorf("Expr() want = %v, but got = %v", v, got.k_v_map[k])
 							}
 						}
 					}
 				}
 				if !is_matched {
-					t.Errorf("Nothing matched. Expr() is not working")
+					t.Errorf("Nothing matched name = %v. Expr() is not working", want.name)
 				}
 			}
 		})
