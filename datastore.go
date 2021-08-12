@@ -1,9 +1,5 @@
 package main
 
-import (
-	"os"
-)
-
 type Datastore struct {
 	name  string
 	store map[string]string
@@ -32,23 +28,13 @@ func (ds *Datastore) Delete(key string) {
 	delete(ds.store, key)
 }
 
-func (ds *Datastore) Persist(file_path string) error {
-	f, err := os.Create(file_path)
-
-	if err != nil {
-		return err
-	} else {
-		var str string
-		for k, v := range ds.store {
-			str = str + k + "=" + v + ";"
-		}
-		str = ds.name + "={" + str + "};"
-		if _, err := f.Write([]byte(str)); err != nil {
-			return err
-		}
+func (ds *Datastore) Persisted() string {
+	str := ""
+	for k, v := range ds.store {
+		str = str + k + "=" + v + ";"
 	}
-	defer f.Close()
-	return nil
+	str = ds.name + "={" + str + "};"
+	return str
 }
 
 func Restore(file_path string) *Datastore {

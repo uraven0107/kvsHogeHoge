@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"testing"
 )
 
@@ -119,15 +118,17 @@ func TestDatastore_Delete(t *testing.T) {
 	}
 }
 
-func TestDatastore_Persist(t *testing.T) {
+func TestDatastore_Persisted(t *testing.T) {
 	const file_path = "test_data/test.hogedb"
 	tests := []struct {
 		name string
 		ds   *Datastore
+		want string
 	}{
 		{
-			name: "canPersist",
+			name: "canConvertPersisted",
 			ds:   NewDatastore("test"),
+			want: "test={hoge=fuga;foo=bar;};",
 		},
 	}
 	for _, tt := range tests {
@@ -135,25 +136,9 @@ func TestDatastore_Persist(t *testing.T) {
 			ds := tt.ds
 			ds.Write("hoge", "fuga")
 			ds.Write("foo", "bar")
-			if err := ds.Persist(file_path); err != nil {
-				t.Errorf(":( Error has ocuured in Datastore.Persist(); error = %v", err.Error())
+			if got := ds.Persisted(); got != tt.want {
+				t.Errorf(":( Datastore.Persisted() = %v, want %v", got, tt.want)
 			}
-			if f, err := os.Open(file_path); err != nil {
-				t.Errorf(":( Error has ocuured in os.Open(); error = %v", err.Error())
-			} else {
-				buf := make([]byte, 1024)
-				c, err2 := f.Read(buf)
-				if err2 != nil {
-					t.Errorf(err2.Error())
-				}
-				want := ds.name + "={hoge=fuga;foo=bar;};"
-				if content := string(buf[:c]); content != want {
-					t.Errorf(":( Datastore.Persist(), file content = %v, want = %v", content, want)
-				}
-			}
-			defer func() {
-				os.Remove(file_path)
-			}()
 		})
 	}
 }
