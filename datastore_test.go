@@ -119,7 +119,6 @@ func TestDatastore_Delete(t *testing.T) {
 }
 
 func TestDatastore_Persisted(t *testing.T) {
-	const file_path = "test_data/test.hogedb"
 	tests := []struct {
 		name string
 		ds   *Datastore
