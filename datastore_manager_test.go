@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -42,27 +43,15 @@ func TestDatastoreManager_Persist(t *testing.T) {
 				t.Errorf(":( Error has occured at DatastoreManager().Persist(), error = %v", err)
 				return
 			}
-			f, err := os.Open(file_path)
+			bytes, err := ioutil.ReadFile(file_path)
 			if err != nil {
-				t.Errorf(":( Error has occured at os.Open(), error = %v", err)
+				t.Errorf(":( Error has occured at ioutil.ReadFile(), error = %v", err)
 				return
 			}
-			buf := make([]byte, 1024)
-			n, err := f.Read(buf)
-			if err != nil {
-				t.Errorf(":( Error has occured at os.file.Read(), error = %v", err)
-				return
-			}
-			if n == 0 {
-				t.Errorf(":( Nothing has read at os.file.Read()")
-				return
-			}
-			buf2 := buf[:n]
-			str := string(buf2)
+			str := string(bytes)
 			if str != tt.want {
 				t.Errorf(":( File contents has not expected, want = %v, but got = %v", tt.want, str)
 			}
-			defer f.Close()
 			os.Remove(file_path)
 		})
 	}
