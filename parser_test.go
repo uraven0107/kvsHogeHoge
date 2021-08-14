@@ -32,7 +32,12 @@ func Test_Expr(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			par := NewParser(NewTokenizer("test={hoge=fuga;foo=bar;};baka={aho=manuke;unko=brbr;aaa=bbb;};"))
+			tokenizer, err := NewTokenizer("test={hoge=fuga;foo=bar;};baka={aho=manuke;unko=brbr;aaa=bbb;};")
+			if err != nil {
+				t.Errorf(":( Error has occured at NewTokenizer(), error = %v", err)
+				return
+			}
+			par := NewParser(tokenizer)
 			gots, err := par.Expr()
 			if err != nil {
 				t.Errorf("Expr() error = %v", err)

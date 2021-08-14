@@ -7,7 +7,7 @@ type Tokenizer struct {
 	p      int
 }
 
-func NewTokenizer(source string) *Tokenizer {
+func NewTokenizer(source string) (*Tokenizer, error) {
 	// 文字列からトークンスライス生成する
 	runes := []rune(source)
 	tokens := make([]string, len(runes)) // ルーンの数 >= 文字列の数
@@ -34,6 +34,10 @@ func NewTokenizer(source string) *Tokenizer {
 		tokens_len = tokens_len + 1
 	}
 
+	if tokens_len == 0 {
+		return nil, errors.New("token length is 0, Tokenizer.NewTokenizer() received invalid string.")
+	}
+
 	// トークンスライスから空文字を除去する
 	new_tokens := make([]string, tokens_len)
 	i := 0
@@ -48,7 +52,7 @@ func NewTokenizer(source string) *Tokenizer {
 	return &Tokenizer{
 		tokens: new_tokens,
 		p:      0,
-	}
+	}, nil
 }
 
 func (t *Tokenizer) next() (string, error) {

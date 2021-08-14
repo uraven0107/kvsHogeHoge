@@ -31,7 +31,10 @@ func Test_next(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			source := "test={hoge=fuga;foo=bar;};"
-			tokenizer := NewTokenizer(source)
+			tokenizer, err := NewTokenizer(source)
+			if err != nil {
+				t.Errorf(":( Error has occured at NewTokenizer(), error = %v", err)
+			}
 			for _, want := range tt.wants {
 				if !tokenizer.hasNext() {
 					t.Errorf("hasNext() should return true.")
@@ -79,7 +82,10 @@ func Test_prev(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			source := "test={hoge=fuga;foo=bar;};"
-			tokenizer := NewTokenizer(source)
+			tokenizer, err := NewTokenizer(source)
+			if err != nil {
+				t.Errorf(":( Error has occured at NewTokenizer(), error = %v", err)
+			}
 			for tokenizer.hasNext() {
 				tokenizer.next()
 			}
