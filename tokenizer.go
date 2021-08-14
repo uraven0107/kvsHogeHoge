@@ -35,7 +35,7 @@ func NewTokenizer(source string) (*Tokenizer, error) {
 	}
 
 	if tokens_len == 0 {
-		return nil, errors.New("token length is 0, Tokenizer.NewTokenizer() received invalid string.")
+		return nil, errors.New("token length is 0, Tokenizer.NewTokenizer() received invalid string")
 	}
 
 	// トークンスライスから空文字を除去する
