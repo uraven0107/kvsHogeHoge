@@ -1,37 +1,27 @@
 package main
 
-import (
-	"io/ioutil"
-	"os"
-)
-
 type DatastoreManager struct {
-	file_path string
-	ds_list   []*Datastore
+	ds_list []*Datastore
 }
 
 func (dm *DatastoreManager) Persist() error {
-	f, err := os.Create(dm.file_path)
+	persisted := ""
+	for _, ds := range dm.ds_list {
+		persisted = persisted + ds.Persisted()
+	}
+	err := WriteDBFile(&persisted)
 	if err != nil {
 		return err
-	} else {
-		persisted := ""
-		for _, ds := range dm.ds_list {
-			persisted = persisted + ds.Persisted()
-		}
-		if _, err := f.Write([]byte(persisted)); err != nil {
-			return err
-		}
 	}
 	return nil
 }
 
 func (dm *DatastoreManager) Restore() error {
-	source, err := ioutil.ReadFile(dm.file_path)
+	file_contents, err := ReadDBFile()
 	if err != nil {
 		return err
 	}
-	tokenizer, err := NewTokenizer(string(source))
+	tokenizer, err := NewTokenizer(file_contents)
 	if err != nil {
 		return err
 	}
