@@ -103,6 +103,7 @@ func TestDatastoreManager_Restore(t *testing.T) {
 					return
 				}
 			}
+			os.Remove(db_file_path)
 		})
 	}
 }
