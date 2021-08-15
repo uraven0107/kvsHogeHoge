@@ -48,7 +48,7 @@ func TestDatastoreManager_Persist(t *testing.T) {
 			if str != tt.want {
 				t.Errorf(":( File contents has not expected, want = %v, but got = %v", tt.want, str)
 			}
-			os.Remove(db_file_path)
+			defer os.Remove(db_file_path)
 		})
 	}
 }
@@ -103,7 +103,7 @@ func TestDatastoreManager_Restore(t *testing.T) {
 					return
 				}
 			}
-			os.Remove(db_file_path)
+			defer os.Remove(db_file_path)
 		})
 	}
 }
