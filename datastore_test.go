@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDatastore_Write(t *testing.T) {
+	assert := assert.New(t)
 	type args struct {
 		key   string
 		value string
@@ -37,14 +41,14 @@ func TestDatastore_Write(t *testing.T) {
 			for _, args := range tt.args_list {
 				ds.Write(args.key, args.value)
 			}
-			if got := ds.Size(); got != tt.want {
-				t.Errorf(":( Datastore.Size() = %v, want %v", got, tt.want)
-			}
+			got := ds.Size()
+			assert.Equal(tt.want, got, fmt.Sprintf(":( Datastore.Size() = %v, want %v", got, tt.want))
 		})
 	}
 }
 
 func TestDatastore_Read(t *testing.T) {
+	assert := assert.New(t)
 	type argAndWant struct {
 		key  string
 		want string
@@ -75,15 +79,15 @@ func TestDatastore_Read(t *testing.T) {
 			ds.Write("hoge", "fuga")
 			ds.Write("foo", "bar")
 			for _, argAndWant := range tt.argsAndWants {
-				if got := ds.Read(argAndWant.key); got != argAndWant.want {
-					t.Errorf(":( Datastore.Read() = %v, want %v", got, argAndWant.want)
-				}
+				got := ds.Read(argAndWant.key)
+				assert.Equal(argAndWant.want, got, fmt.Sprintf(":( Datastore.Read() = %v, want %v", got, argAndWant.want))
 			}
 		})
 	}
 }
 
 func TestDatastore_Delete(t *testing.T) {
+	assert := assert.New(t)
 	type args struct {
 		key string
 	}
@@ -108,17 +112,16 @@ func TestDatastore_Delete(t *testing.T) {
 			ds.Write("hoge", "fuga")
 			ds.Write("foo", "bar")
 			ds.Delete("hoge")
-			if got := ds.Read(tt.args.key); got != "" {
-				t.Errorf(":( Datastore.Delete() = %v, want %v", got, nil)
-			}
-			if got := ds.Size(); got != tt.want_size {
-				t.Errorf(":( Datastore.Size() = %v, want %v", got, tt.want_size)
-			}
+			got := ds.Read(tt.args.key)
+			assert.Empty(got, ":( Datastore.Delete() dosen't work!")
+			got_size := ds.Size()
+			assert.Equal(got_size, tt.want_size, fmt.Sprintf(":( Datastore.Size() = %v, want %v", got_size, tt.want_size))
 		})
 	}
 }
 
 func TestDatastore_Persisted(t *testing.T) {
+	assert := assert.New(t)
 	tests := []struct {
 		name string
 		ds   *Datastore
@@ -135,9 +138,8 @@ func TestDatastore_Persisted(t *testing.T) {
 			ds := tt.ds
 			ds.Write("hoge", "fuga")
 			ds.Write("foo", "bar")
-			if got := ds.Persisted(); got != tt.want {
-				t.Errorf(":( Datastore.Persisted() = %v, want %v", got, tt.want)
-			}
+			got := ds.Persisted()
+			assert.Equal(got, tt.want, fmt.Sprintf(":( Datastore.Persisted() = %v, want %v", got, tt.want))
 		})
 	}
 }
