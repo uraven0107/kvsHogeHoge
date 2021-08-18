@@ -4,6 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDatastoreManager_Persist(t *testing.T) {
@@ -106,4 +108,29 @@ func TestDatastoreManager_Restore(t *testing.T) {
 			defer os.Remove(db_file_path)
 		})
 	}
+}
+
+func TestDatastoreManager_getDatastore(t *testing.T) {
+
+	dm := DatastoreManager{}
+
+	t.Run("notInitializedDatastoreManagerShouldPanic", func(t *testing.T) {
+		assert := assert.New(t)
+		assert.Panics(func() {
+			dm.getDatastore("hoge")
+		})
+	})
+
+	ds := NewDatastore("test")
+	dm.ds_list = []*Datastore{ds}
+
+	t.Run("getDatastoreShouldReturnDatastore", func(t *testing.T) {
+		assert := assert.New(t)
+		assert.NotNil(dm.getDatastore("test"), ":( Datastore.getDatastore() shouldn't return nil")
+	})
+
+	t.Run("getDatastoreShouldReturnNil", func(t *testing.T) {
+		assert := assert.New(t)
+		assert.Nil(dm.getDatastore("fuga"), ":( Datastore.getDatastore() should return nil")
+	})
 }

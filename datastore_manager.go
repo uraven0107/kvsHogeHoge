@@ -4,6 +4,18 @@ type DatastoreManager struct {
 	ds_list []*Datastore
 }
 
+func (dm *DatastoreManager) getDatastore(name string) *Datastore {
+	if dm.ds_list == nil {
+		panic("wooooooop!! DatastoreManager.ds_list doesn't initialized!")
+	}
+	for _, ds := range dm.ds_list {
+		if ds.name == name {
+			return ds
+		}
+	}
+	return nil
+}
+
 func (dm *DatastoreManager) Persist() error {
 	persisted := ""
 	for _, ds := range dm.ds_list {
