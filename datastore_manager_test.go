@@ -134,3 +134,11 @@ func TestDatastoreManager_getDatastore(t *testing.T) {
 		assert.Nil(dm.getDatastore("fuga"), ":( Datastore.getDatastore() should return nil")
 	})
 }
+
+func Test_NewDatastoreManager(t *testing.T) {
+	t.Run("couldNewDatastoreManager", func(t *testing.T) {
+		assert := assert.New(t)
+		dm := NewDatastoreManager()
+		assert.NotNil(dm, ":( NewDatastoreManager() shouldn't return nil")
+	})
+}

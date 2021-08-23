@@ -4,6 +4,12 @@ type DatastoreManager struct {
 	ds_list []*Datastore
 }
 
+func NewDatastoreManager() *DatastoreManager {
+	dm := &DatastoreManager{}
+	dm.ds_list = []*Datastore{}
+	return dm
+}
+
 func (dm *DatastoreManager) getDatastore(name string) *Datastore {
 	if dm.ds_list == nil {
 		panic("wooooooop!! DatastoreManager.ds_list doesn't initialized!")
