@@ -1,11 +1,13 @@
 package main
 
 type DatastoreManager struct {
+	db_file_path string
 	ds_list []*Datastore
 }
 
-func NewDatastoreManager() *DatastoreManager {
+func NewDatastoreManager(db_file_path string) *DatastoreManager {
 	dm := &DatastoreManager{}
+	dm.db_file_path = db_file_path
 	dm.ds_list = []*Datastore{}
 	return dm
 }
@@ -27,7 +29,8 @@ func (dm *DatastoreManager) Persist() error {
 	for _, ds := range dm.ds_list {
 		persisted = persisted + ds.Persisted()
 	}
-	err := WriteDBFile(&persisted)
+	
+	err := WriteFile(&persisted, dm.db_file_path)
 	if err != nil {
 		return err
 	}
@@ -35,7 +38,7 @@ func (dm *DatastoreManager) Persist() error {
 }
 
 func (dm *DatastoreManager) Restore() error {
-	file_contents, err := ReadDBFile()
+	file_contents, err := ReadFile(dm.db_file_path)
 	if err != nil {
 		return err
 	}

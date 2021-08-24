@@ -8,6 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const db_file_dir = "test_data"
+const db_file = "test.hogedb"
+const db_file_path = db_file_dir + string(os.PathSeparator) + db_file
+
 func TestDatastoreManager_Persist(t *testing.T) {
 	ds1 := NewDatastore("test1")
 	ds1.Write("hoge", "fuga")
@@ -34,9 +38,8 @@ func TestDatastoreManager_Persist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dm := DatastoreManager{
-				ds_list: tt.fields.ds_list,
-			}
+			dm := NewDatastoreManager(db_file_path)
+			dm.ds_list = tt.fields.ds_list
 			if err := dm.Persist(); err != nil {
 				t.Errorf(":( Error has occured at DatastoreManager().Persist(), error = %v", err)
 				return
@@ -80,9 +83,7 @@ func TestDatastoreManager_Restore(t *testing.T) {
 				t.Errorf(":( Error has occured at ioutil.WriteFile(), error = %v", err)
 				return
 			}
-			dm := DatastoreManager{
-				ds_list: []*Datastore{},
-			}
+			dm := NewDatastoreManager(db_file_path)
 			if err := dm.Restore(); err != nil {
 				t.Errorf(":( Error has occured at DatastoreManager().Restore(), error = %v", err)
 				return
@@ -138,7 +139,7 @@ func TestDatastoreManager_getDatastore(t *testing.T) {
 func Test_NewDatastoreManager(t *testing.T) {
 	t.Run("couldNewDatastoreManager", func(t *testing.T) {
 		assert := assert.New(t)
-		dm := NewDatastoreManager()
+		dm := NewDatastore(db_file_path)
 		assert.NotNil(dm, ":( NewDatastoreManager() shouldn't return nil")
 	})
 }
