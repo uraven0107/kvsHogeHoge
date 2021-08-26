@@ -12,6 +12,32 @@ const db_file_dir = "test_data"
 const db_file = "test.hogedb"
 const db_file_path = db_file_dir + string(os.PathSeparator) + db_file
 
+func TestNewDatastoreManager(t *testing.T) {
+	t.Run("nilConfigShouldReturnError", func(t *testing.T) {
+		assert := assert.New(t)
+		_, err := NewDatastoreManager(nil)
+		assert.EqualError(err, "Configure is nil")
+	})
+
+	t.Run("blankFilePathShouldReturnError", func(t *testing.T) {
+		assert := assert.New(t)
+		config := new(Configure)
+		config.file_path = ""
+		_, err := NewDatastoreManager(config)
+		assert.EqualError(err, "Configure.file_path is blank")
+	})
+
+	t.Run("canInitializeDatastoreManager", func(t *testing.T) {
+		assert := assert.New(t)
+		config := new(Configure)
+		config.file_path = db_file_path
+		dm, _ := NewDatastoreManager(config)
+		assert.NotNil(dm)
+		assert.NotNil(dm.ds_list)
+		assert.Equal(db_file_path, dm.db_file_path)
+	})
+}
+
 func TestDatastoreManager_Persist(t *testing.T) {
 	ds1 := NewDatastore("test1")
 	ds1.Write("hoge", "fuga")
@@ -40,7 +66,10 @@ func TestDatastoreManager_Persist(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			config := new(Configure)
 			config.file_path = db_file_path
-			dm := NewDatastoreManager(config)
+			dm, err := NewDatastoreManager(config)
+			if err != nil {
+				t.Errorf(":( Error has occured at NewDatastoreManage(), error = %v", err)
+			}
 			dm.ds_list = tt.fields.ds_list
 			if err := dm.Persist(); err != nil {
 				t.Errorf(":( Error has occured at DatastoreManager().Persist(), error = %v", err)
@@ -87,7 +116,10 @@ func TestDatastoreManager_Restore(t *testing.T) {
 			}
 			config := new(Configure)
 			config.file_path = db_file_path
-			dm := NewDatastoreManager(config)
+			dm, err := NewDatastoreManager(config)
+			if err != nil {
+				t.Errorf(":( Error has occured at NewDatastoreManage(), error = %v", err)
+			}
 			if err := dm.Restore(); err != nil {
 				t.Errorf(":( Error has occured at DatastoreManager().Restore(), error = %v", err)
 				return

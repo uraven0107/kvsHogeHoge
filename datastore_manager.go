@@ -1,15 +1,25 @@
 package main
 
+import "errors"
+
 type DatastoreManager struct {
 	db_file_path string
-	ds_list []*Datastore
+	ds_list      []*Datastore
 }
 
-func NewDatastoreManager(config *Configure) *DatastoreManager {
+func NewDatastoreManager(config *Configure) (*DatastoreManager, error) {
+	if config == nil {
+		return nil, errors.New("Configure is nil")
+	}
+
+	if config.file_path == "" {
+		return nil, errors.New("Configure.file_path is blank")
+	}
+
 	dm := &DatastoreManager{}
 	dm.db_file_path = config.file_path
 	dm.ds_list = []*Datastore{}
-	return dm
+	return dm, nil
 }
 
 func (dm *DatastoreManager) getDatastore(name string) *Datastore {
