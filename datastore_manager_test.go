@@ -38,7 +38,9 @@ func TestDatastoreManager_Persist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dm := NewDatastoreManager(db_file_path)
+			config := new(Configure)
+			config.file_path = db_file_path
+			dm := NewDatastoreManager(config)
 			dm.ds_list = tt.fields.ds_list
 			if err := dm.Persist(); err != nil {
 				t.Errorf(":( Error has occured at DatastoreManager().Persist(), error = %v", err)
@@ -83,7 +85,9 @@ func TestDatastoreManager_Restore(t *testing.T) {
 				t.Errorf(":( Error has occured at ioutil.WriteFile(), error = %v", err)
 				return
 			}
-			dm := NewDatastoreManager(db_file_path)
+			config := new(Configure)
+			config.file_path = db_file_path
+			dm := NewDatastoreManager(config)
 			if err := dm.Restore(); err != nil {
 				t.Errorf(":( Error has occured at DatastoreManager().Restore(), error = %v", err)
 				return
