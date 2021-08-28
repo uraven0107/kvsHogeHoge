@@ -90,6 +90,7 @@ func TestDatastoreManager_Persist(t *testing.T) {
 }
 
 func TestDatastoreManager_Restore(t *testing.T) {
+	defer os.Remove(db_file_path)
 	ds1 := NewDatastore("test")
 	ds1.Write("hoge", "fuga")
 	ds1.Write("foo", "bar")
@@ -142,7 +143,6 @@ func TestDatastoreManager_Restore(t *testing.T) {
 					return
 				}
 			}
-			defer os.Remove(db_file_path)
 		})
 	}
 }
