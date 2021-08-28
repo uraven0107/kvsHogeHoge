@@ -7,23 +7,15 @@ type Tokenizer struct {
 	p      int
 }
 
-func NewTokenizer(source string) (*Tokenizer, error) {
-	// 文字列からトークンスライス生成する
-	runes := []rune(source)
-	tokens := make([]string, len(runes)) // ルーンの数 >= 文字列の数
-	str := ""
-	for _, r := range runes {
-		switch s := string(r); s {
-		case "=", "{", "}", ";":
-			if str != "" {
-				tokens = append(tokens, str)
-				str = ""
-			}
-			tokens = append(tokens, s)
-		default:
-			str = str + s
-		}
-	}
+type Tokenizer_type int
+
+const (
+	Type_DS Tokenizer_type = iota
+	Type_Query
+)
+
+func NewTokenizer(tokenizer_type Tokenizer_type, source string) (*Tokenizer, error) {
+	tokens := convertStringToTokens(tokenizer_type, source)
 
 	// 空文字以外の文字列数を出す
 	tokens_len := 0
@@ -55,8 +47,15 @@ func NewTokenizer(source string) (*Tokenizer, error) {
 	}, nil
 }
 
-func (t *Tokenizer) next() (string, error) {
-	if !t.hasNext() {
+func convertStringToTokens(tokenizer_type Tokenizer_type, source string) []string {
+	// 文字列からトークンスライス生成する
+	runes := []rune(source)
+	token_generator := NewTokenGenerator(tokenizer_type)
+	return token_generator.Generate(&runes)
+}
+
+func (t *Tokenizer) Next() (string, error) {
+	if !t.HasNext() {
 		return "", errors.New(":( No such Element")
 	}
 	str := t.tokens[t.p]
@@ -64,16 +63,16 @@ func (t *Tokenizer) next() (string, error) {
 	return str, nil
 }
 
-func (t *Tokenizer) hasNext() bool {
+func (t *Tokenizer) HasNext() bool {
 	return len(t.tokens) >= t.p+1
 }
 
-func (t *Tokenizer) hasPrev() bool {
+func (t *Tokenizer) HasPrev() bool {
 	return t.p-1 >= 0
 }
 
-func (t *Tokenizer) prev() (string, error) {
-	if !t.hasPrev() {
+func (t *Tokenizer) Prev() (string, error) {
+	if !t.HasPrev() {
 		return "", errors.New(":( No such Element")
 	}
 	t.p = t.p - 1

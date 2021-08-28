@@ -31,15 +31,15 @@ func Test_next(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			source := "test={hoge=fuga;foo=bar;};"
-			tokenizer, err := NewTokenizer(source)
+			tokenizer, err := NewTokenizer(Type_DS, source)
 			if err != nil {
 				t.Errorf(":( Error has occured at NewTokenizer(), error = %v", err)
 			}
 			for _, want := range tt.wants {
-				if !tokenizer.hasNext() {
+				if !tokenizer.HasNext() {
 					t.Errorf("hasNext() should return true.")
 				}
-				got, err := tokenizer.next()
+				got, err := tokenizer.Next()
 				if err != nil {
 					t.Errorf("Error has occured at next(). error = %v", err)
 				}
@@ -47,7 +47,7 @@ func Test_next(t *testing.T) {
 					t.Errorf("next() = %v, want %v", got, want)
 				}
 			}
-			if tokenizer.hasNext() {
+			if tokenizer.HasNext() {
 				t.Errorf("hasNext() should return false.")
 			}
 
@@ -82,18 +82,18 @@ func Test_prev(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			source := "test={hoge=fuga;foo=bar;};"
-			tokenizer, err := NewTokenizer(source)
+			tokenizer, err := NewTokenizer(Type_DS, source)
 			if err != nil {
 				t.Errorf(":( Error has occured at NewTokenizer(), error = %v", err)
 			}
-			for tokenizer.hasNext() {
-				tokenizer.next()
+			for tokenizer.HasNext() {
+				tokenizer.Next()
 			}
 			for _, want := range tt.wants {
-				if !tokenizer.hasPrev() {
+				if !tokenizer.HasPrev() {
 					t.Errorf("hasPrev() should return true.")
 				}
-				got, err := tokenizer.prev()
+				got, err := tokenizer.Prev()
 				if err != nil {
 					t.Errorf("Error has occured at prev(). error = %v", err)
 				}
@@ -101,7 +101,7 @@ func Test_prev(t *testing.T) {
 					t.Errorf("prev() = %v, want %v", got, want)
 				}
 			}
-			if tokenizer.hasPrev() {
+			if tokenizer.HasPrev() {
 				t.Errorf("hasPrev() should return false.")
 			}
 		})

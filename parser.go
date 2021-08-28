@@ -44,8 +44,8 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 		datastoreSource = nil
 	}
 	t := par.tokenizer
-	for t.hasNext() {
-		token, err := t.next()
+	for t.HasNext() {
+		token, err := t.Next()
 		if err != nil {
 			return nil, err
 		}
@@ -82,7 +82,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 				is_completed = true
 				break
 			}
-			next, err := t.next()
+			next, err := t.Next()
 			if err != nil {
 				return nil, err
 			}
