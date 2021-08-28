@@ -55,7 +55,7 @@ func (dm *DatastoreManager) Restore() error {
 	if err != nil {
 		return err
 	}
-	tokenizer, err := NewTokenizer(Type_Query, file_contents)
+	tokenizer, err := NewTokenizer(Type_DS, file_contents)
 	if err != nil {
 		return err
 	}

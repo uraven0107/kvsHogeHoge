@@ -5,9 +5,10 @@ type TokenGenerator interface {
 }
 
 func NewTokenGenerator(tokenizer_type Tokenizer_type) TokenGenerator {
-	return newDSTokenGenerator()
-}
-
-func newDSTokenGenerator() TokenGenerator {
-	return DSTokenGenerator{}
+	switch tokenizer_type {
+	case Type_DS:
+		return DSTokenGenerator{}
+	default:
+		return QueryTokenGenerator{}
+	}
 }
