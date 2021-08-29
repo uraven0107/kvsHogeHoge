@@ -2,8 +2,8 @@ package main
 
 type DSTokenGenerator struct{}
 
-func (DSTokenGenerator) Generate(runes *[]rune) []string {
-	tokens := []string{}
+func (DSTokenGenerator) Generate(runes *[]rune) Tokens {
+	tokens := Tokens{}
 	str := ""
 	for _, r := range *runes {
 		switch s := string(r); s {

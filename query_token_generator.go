@@ -2,8 +2,8 @@ package main
 
 type QueryTokenGenerator struct{}
 
-func (QueryTokenGenerator) Generate(runes *[]rune) []string {
-	tokens := []string{}
+func (QueryTokenGenerator) Generate(runes *[]rune) Tokens {
+	tokens := Tokens{}
 	str := ""
 	for _, r := range *runes {
 		switch s := string(r); s {

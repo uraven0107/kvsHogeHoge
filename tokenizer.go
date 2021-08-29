@@ -3,7 +3,7 @@ package main
 import "errors"
 
 type Tokenizer struct {
-	tokens []string
+	tokens Tokens
 	p      int
 }
 
@@ -27,7 +27,7 @@ func NewTokenizer(tokenizer_type Tokenizer_type, source string) (*Tokenizer, err
 	}, nil
 }
 
-func convertStringToTokens(tokenizer_type Tokenizer_type, source string) []string {
+func convertStringToTokens(tokenizer_type Tokenizer_type, source string) Tokens {
 	// 文字列からトークンスライス生成する
 	runes := []rune(source)
 	token_generator := NewTokenGenerator(tokenizer_type)

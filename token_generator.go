@@ -1,7 +1,7 @@
 package main
 
 type TokenGenerator interface {
-	Generate(runes *[]rune) []string
+	Generate(runes *[]rune) Tokens
 }
 
 func NewTokenGenerator(tokenizer_type Tokenizer_type) TokenGenerator {
