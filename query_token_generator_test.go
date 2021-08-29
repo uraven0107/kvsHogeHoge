@@ -16,12 +16,6 @@ func Test_QueryTokenGenerate(t *testing.T) {
 		runes := []rune(query)
 		r_p := &runes
 		got := g.Generate(r_p)
-		new_got := []string{}
-		for _, str := range got {
-			if str != "" {
-				new_got = append(new_got, str)
-			}
-		}
-		assert.Equal(expected, new_got, fmt.Sprintf("Tokens not equal, expected = %v, but got = %v", expected, got))
+		assert.Equal(expected, got, fmt.Sprintf("Tokens not equal, expected = %v, but got = %v", expected, got))
 	})
 }

@@ -17,32 +17,12 @@ const (
 func NewTokenizer(tokenizer_type Tokenizer_type, source string) (*Tokenizer, error) {
 	tokens := convertStringToTokens(tokenizer_type, source)
 
-	// 空文字以外の文字列数を出す
-	tokens_len := 0
-	for _, t := range tokens {
-		if t == "" {
-			continue
-		}
-		tokens_len = tokens_len + 1
-	}
-
-	if tokens_len == 0 {
+	if len(tokens) == 0 {
 		return nil, errors.New("token length is 0, Tokenizer.NewTokenizer() received invalid string = " + source)
 	}
 
-	// トークンスライスから空文字を除去する
-	new_tokens := make([]string, tokens_len)
-	i := 0
-	for _, t := range tokens {
-		if t == "" {
-			continue
-		}
-		new_tokens[i] = t
-		i = i + 1
-	}
-
 	return &Tokenizer{
-		tokens: new_tokens,
+		tokens: tokens,
 		p:      0,
 	}, nil
 }
