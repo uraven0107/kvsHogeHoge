@@ -29,7 +29,7 @@ func NewTokenizer(tokenizer_type Tokenizer_type, source string) (*Tokenizer, err
 
 func convertStringToTokens(tokenizer_type Tokenizer_type, source string) Tokens {
 	// 文字列からトークンスライス生成する
-	runes := []rune(source)
+	runes := Runes(source)
 	token_generator := NewTokenGenerator(tokenizer_type)
 	return token_generator.Generate(&runes)
 }

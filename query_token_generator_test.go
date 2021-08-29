@@ -13,7 +13,7 @@ func Test_QueryTokenGenerate(t *testing.T) {
 		query := "use hoge fuga"
 		expected := Tokens{"use", "hoge", "fuga"}
 		g := QueryTokenGenerator{}
-		runes := []rune(query)
+		runes := Runes(query)
 		r_p := &runes
 		got := g.Generate(r_p)
 		assert.Equal(expected, got, fmt.Sprintf("Tokens not equal, expected = %v, but got = %v", expected, got))

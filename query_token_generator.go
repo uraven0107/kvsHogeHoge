@@ -2,7 +2,7 @@ package main
 
 type QueryTokenGenerator struct{}
 
-func (QueryTokenGenerator) Generate(runes *[]rune) Tokens {
+func (QueryTokenGenerator) Generate(runes *Runes) Tokens {
 	tokens := Tokens{}
 	str := ""
 	for _, r := range *runes {

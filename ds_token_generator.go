@@ -2,7 +2,7 @@ package main
 
 type DSTokenGenerator struct{}
 
-func (DSTokenGenerator) Generate(runes *[]rune) Tokens {
+func (DSTokenGenerator) Generate(runes *Runes) Tokens {
 	tokens := Tokens{}
 	str := ""
 	for _, r := range *runes {
