@@ -5,6 +5,9 @@ type Application struct {
 	current_ds *Datastore
 }
 
-func (app Application) Current_name() string {
+func (app Application) Current_ds_name() string {
+	if app.current_ds == nil {
+		return "none"
+	}
 	return app.current_ds.name
 }
