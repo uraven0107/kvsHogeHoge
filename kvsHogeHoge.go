@@ -1,13 +1,23 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 )
 
-type Context struct {
+type Application struct {
 	ds_manager *DatastoreManager
+}
+
+type Context struct {
+	app        *Application
 	current_ds *Datastore
+}
+
+func NewContext(app *Application) *Context {
+	return &Context{
+		app:        app,
+		current_ds: nil,
+	}
 }
 
 func (ctx *Context) Current_ds_name() string {
@@ -18,9 +28,9 @@ func (ctx *Context) Current_ds_name() string {
 }
 
 func (ctx *Context) Switch_ds(ds_name string) error {
-	ds := ctx.ds_manager.getDatastore(ds_name)
+	ds := ctx.app.ds_manager.getDatastore(ds_name)
 	if ds == nil {
-		return errors.New(fmt.Sprintf("Datastore named '%v' dosen't exist", ds_name))
+		return fmt.Errorf("Datastore named '%v' dosen't exist", ds_name)
 	}
 	ctx.current_ds = ds
 	return nil

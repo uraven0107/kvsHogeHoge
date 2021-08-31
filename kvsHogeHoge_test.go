@@ -29,8 +29,10 @@ func Test_switch_ds(t *testing.T) {
 		ds_list := []*Datastore{ds1, ds2}
 		manager := &DatastoreManager{}
 		manager.ds_list = ds_list
+		app := &Application{}
+		app.ds_manager = manager
 		ctx := &Context{}
-		ctx.ds_manager = manager
+		ctx.app = app
 		err := ctx.Switch_ds("hoge")
 		assert.Nil(err, "Switch_ds() shoudn't return error")
 		assert.Equal(ds1, ctx.current_ds, "current_ds hasn't expected")
