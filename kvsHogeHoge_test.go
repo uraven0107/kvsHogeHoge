@@ -10,13 +10,13 @@ func Test_current_name(t *testing.T) {
 	t.Run("canGetCurrentDatastoreName", func(t *testing.T) {
 		assert := assert.New(t)
 		ds := NewDatastore("hoge")
-		ctx := &Context{}
+		ctx := &AppContext{}
 		ctx.current_ds = ds
 		assert.Equal("hoge", ctx.Current_ds_name(), "current_name() doesn't equal")
 	})
 	t.Run("nilDatastore", func(t *testing.T) {
 		assert := assert.New(t)
-		ctx := &Context{}
+		ctx := &AppContext{}
 		assert.Equal("none", ctx.Current_ds_name(), "current_name() doesn't 'none'")
 	})
 }
@@ -31,7 +31,7 @@ func Test_switch_ds(t *testing.T) {
 		manager.ds_list = ds_list
 		app := &Application{}
 		app.ds_manager = manager
-		ctx := &Context{}
+		ctx := &AppContext{}
 		ctx.app = app
 		err := ctx.Switch_ds("hoge")
 		assert.Nil(err, "Switch_ds() shoudn't return error")
