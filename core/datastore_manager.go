@@ -1,6 +1,11 @@
-package main
+package core
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/uraven0107/kvsHogeHoge/process"
+	"github.com/uraven0107/kvsHogeHoge/util"
+)
 
 type DatastoreManager struct {
 	db_file_path string
@@ -43,7 +48,7 @@ func (dm *DatastoreManager) Persist() error {
 		persisted = persisted + ds.Persisted()
 	}
 
-	err := WriteFile(&persisted, dm.db_file_path)
+	err := util.WriteFile(&persisted, dm.db_file_path)
 	if err != nil {
 		return err
 	}
@@ -51,15 +56,15 @@ func (dm *DatastoreManager) Persist() error {
 }
 
 func (dm *DatastoreManager) Restore() error {
-	file_contents, err := ReadFile(dm.db_file_path)
+	file_contents, err := util.ReadFile(dm.db_file_path)
 	if err != nil {
 		return err
 	}
-	tokenizer, err := NewTokenizer(Type_DS, file_contents)
+	tokenizer, err := process.NewTokenizer(process.Type_DS, file_contents)
 	if err != nil {
 		return err
 	}
-	parser := NewParser(tokenizer)
+	parser := process.NewParser(tokenizer)
 	ds_sources, err := parser.Expr()
 
 	if err != nil {
@@ -67,8 +72,8 @@ func (dm *DatastoreManager) Restore() error {
 	}
 
 	for _, ds_source := range ds_sources {
-		ds := NewDatastore(ds_source.name)
-		for k, v := range ds_source.k_v_map {
+		ds := NewDatastore(ds_source.Name)
+		for k, v := range ds_source.K_V_map {
 			ds.Write(k, v)
 		}
 		dm.ds_list = append(dm.ds_list, ds)

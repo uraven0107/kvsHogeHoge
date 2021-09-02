@@ -1,9 +1,11 @@
-package main
+package process
+
+import "github.com/uraven0107/kvsHogeHoge/alias"
 
 type QueryTokenGenerator struct{}
 
-func (QueryTokenGenerator) Generate(runes *Runes) Tokens {
-	tokens := Tokens{}
+func (QueryTokenGenerator) Generate(runes *alias.Runes) alias.Tokens {
+	tokens := alias.Tokens{}
 	str := ""
 	for _, r := range *runes {
 		switch s := string(r); s {

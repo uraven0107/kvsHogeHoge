@@ -1,9 +1,13 @@
-package main
+package process
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/uraven0107/kvsHogeHoge/alias"
+)
 
 type Tokenizer struct {
-	tokens Tokens
+	tokens alias.Tokens
 	p      int
 }
 
@@ -27,9 +31,9 @@ func NewTokenizer(tokenizer_type Tokenizer_type, source string) (*Tokenizer, err
 	}, nil
 }
 
-func convertStringToTokens(tokenizer_type Tokenizer_type, source string) Tokens {
+func convertStringToTokens(tokenizer_type Tokenizer_type, source string) alias.Tokens {
 	// 文字列からトークンスライス生成する
-	runes := Runes(source)
+	runes := alias.Runes(source)
 	token_generator := NewTokenGenerator(tokenizer_type)
 	return token_generator.Generate(&runes)
 }

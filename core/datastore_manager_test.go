@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"io/ioutil"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const db_file_dir = "test_data"
+const db_file_dir = ".." + string(os.PathSeparator) + "test_data"
 const db_file = "test.hogedb"
 const db_file_path = db_file_dir + string(os.PathSeparator) + db_file
 

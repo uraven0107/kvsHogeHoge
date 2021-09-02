@@ -1,7 +1,9 @@
-package main
+package process
+
+import "github.com/uraven0107/kvsHogeHoge/alias"
 
 type TokenGenerator interface {
-	Generate(runes *Runes) Tokens
+	Generate(runes *alias.Runes) alias.Tokens
 }
 
 func NewTokenGenerator(tokenizer_type Tokenizer_type) TokenGenerator {

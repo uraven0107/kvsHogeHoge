@@ -1,10 +1,9 @@
-package main
+package util
 
 import (
 	"io/ioutil"
 	"os"
 )
-
 
 func ReadFile(file_path string) (string, error) {
 	contents, err := ioutil.ReadFile(file_path)

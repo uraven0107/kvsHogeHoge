@@ -1,4 +1,4 @@
-package main
+package process
 
 import (
 	"errors"
@@ -9,8 +9,8 @@ type Parser struct {
 }
 
 type DatastoreSource struct {
-	name    string
-	k_v_map map[string]string
+	Name    string
+	K_V_map map[string]string
 }
 
 func NewParser(tokenizer *Tokenizer) *Parser {
@@ -57,8 +57,8 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 		if name == "" {
 			name = token
 			datastoreSource = &DatastoreSource{
-				name:    name,
-				k_v_map: make(map[string]string),
+				Name:    name,
+				K_V_map: make(map[string]string),
 			}
 			expect = "="
 			eq_after_name = true
@@ -107,7 +107,7 @@ func (par *Parser) Expr() ([]*DatastoreSource, error) {
 		}
 
 		if is_k_v_generated {
-			datastoreSource.k_v_map[key] = value
+			datastoreSource.K_V_map[key] = value
 			is_k_v_generated = false
 		}
 
