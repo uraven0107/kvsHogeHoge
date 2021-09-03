@@ -12,22 +12,18 @@ type DatastoreManager struct {
 	ds_list      []*Datastore
 }
 
-func NewDatastoreManager(config *Configure) (*DatastoreManager, error) {
-	if config == nil {
-		return nil, errors.New("Configure is nil")
-	}
-
-	if config.file_path == "" {
+func NewDatastoreManager(file_path string) (*DatastoreManager, error) {
+	if file_path == "" {
 		return nil, errors.New("Configure.file_path is blank")
 	}
 
 	dm := &DatastoreManager{}
-	dm.db_file_path = config.file_path
+	dm.db_file_path = file_path
 	dm.ds_list = []*Datastore{}
 	return dm, nil
 }
 
-func (dm *DatastoreManager) getDatastore(name string) *Datastore {
+func (dm *DatastoreManager) GetDatastore(name string) *Datastore {
 	if dm.ds_list == nil {
 		panic("wooooooop!! DatastoreManager.ds_list doesn't initialized!")
 	}
@@ -40,6 +36,10 @@ func (dm *DatastoreManager) getDatastore(name string) *Datastore {
 		}
 	}
 	return nil
+}
+
+func (dm *DatastoreManager) AddDatastore(ds *Datastore) {
+	dm.ds_list = append(dm.ds_list, ds)
 }
 
 func (dm *DatastoreManager) Persist() error {

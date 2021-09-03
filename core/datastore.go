@@ -12,6 +12,10 @@ func NewDatastore(name string) *Datastore {
 	return ds
 }
 
+func (ds *Datastore) GetName() string {
+	return ds.name
+}
+
 func (ds *Datastore) Write(key string, value string) {
 	ds.store[key] = value
 }

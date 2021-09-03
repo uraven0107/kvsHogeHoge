@@ -13,25 +13,15 @@ const db_file = "test.hogedb"
 const db_file_path = db_file_dir + string(os.PathSeparator) + db_file
 
 func TestNewDatastoreManager(t *testing.T) {
-	t.Run("nilConfigShouldReturnError", func(t *testing.T) {
-		assert := assert.New(t)
-		_, err := NewDatastoreManager(nil)
-		assert.EqualError(err, "Configure is nil")
-	})
-
 	t.Run("blankFilePathShouldReturnError", func(t *testing.T) {
 		assert := assert.New(t)
-		config := new(Configure)
-		config.file_path = ""
-		_, err := NewDatastoreManager(config)
+		_, err := NewDatastoreManager("")
 		assert.EqualError(err, "Configure.file_path is blank")
 	})
 
 	t.Run("canInitializeDatastoreManager", func(t *testing.T) {
 		assert := assert.New(t)
-		config := new(Configure)
-		config.file_path = db_file_path
-		dm, _ := NewDatastoreManager(config)
+		dm, _ := NewDatastoreManager(db_file_path)
 		assert.NotNil(dm)
 		assert.NotNil(dm.ds_list)
 		assert.Equal(db_file_path, dm.db_file_path)
@@ -64,9 +54,7 @@ func TestDatastoreManager_Persist(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			config := new(Configure)
-			config.file_path = db_file_path
-			dm, err := NewDatastoreManager(config)
+			dm, err := NewDatastoreManager(db_file_path)
 			if err != nil {
 				t.Errorf(":( Error has occured at NewDatastoreManage(), error = %v", err)
 			}
@@ -115,9 +103,7 @@ func TestDatastoreManager_Restore(t *testing.T) {
 				t.Errorf(":( Error has occured at ioutil.WriteFile(), error = %v", err)
 				return
 			}
-			config := new(Configure)
-			config.file_path = db_file_path
-			dm, err := NewDatastoreManager(config)
+			dm, err := NewDatastoreManager(db_file_path)
 			if err != nil {
 				t.Errorf(":( Error has occured at NewDatastoreManage(), error = %v", err)
 			}
@@ -154,7 +140,7 @@ func TestDatastoreManager_getDatastore(t *testing.T) {
 	t.Run("notInitializedDatastoreManagerShouldPanic", func(t *testing.T) {
 		assert := assert.New(t)
 		assert.Panics(func() {
-			dm.getDatastore("hoge")
+			dm.GetDatastore("hoge")
 		})
 	})
 
@@ -163,12 +149,12 @@ func TestDatastoreManager_getDatastore(t *testing.T) {
 
 	t.Run("getDatastoreShouldReturnDatastore", func(t *testing.T) {
 		assert := assert.New(t)
-		assert.NotNil(dm.getDatastore("test"), ":( Datastore.getDatastore() shouldn't return nil")
+		assert.NotNil(dm.GetDatastore("test"), ":( Datastore.getDatastore() shouldn't return nil")
 	})
 
 	t.Run("getDatastoreShouldReturnNil", func(t *testing.T) {
 		assert := assert.New(t)
-		assert.Nil(dm.getDatastore("fuga"), ":( Datastore.getDatastore() should return nil")
+		assert.Nil(dm.GetDatastore("fuga"), ":( Datastore.getDatastore() should return nil")
 	})
 }
 
