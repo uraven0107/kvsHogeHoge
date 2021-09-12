@@ -47,11 +47,11 @@ func TestDatastoreManager_Persist(t *testing.T) {
 		dm.AddDatastore(ds1)
 		dm.AddDatastore(ds2)
 		defer os.Remove(db_file_path)
-		err = dm.Persist()
-		assert.Nil(err, "DatastoreManager.Persist() shouldn't return error")
+		err2 := dm.Persist()
+		assert.Nil(err2, "DatastoreManager.Persist() shouldn't return error")
 
-		bytes, err := ioutil.ReadFile(db_file_path)
-		assert.Nil(err, "ioutil.ReadFile has return error")
+		bytes, err3 := ioutil.ReadFile(db_file_path)
+		assert.Nil(err3, "ioutil.ReadFile has return error")
 
 		actual := string(bytes)
 		expected := ds1.Persisted() + ds2.Persisted()
@@ -68,11 +68,11 @@ func TestDatastoreManager_Restore(t *testing.T) {
 		err := ioutil.WriteFile(db_file_path, buf, os.ModePerm)
 		assert.Nil(err, fmt.Sprintf(":( Error has occured at ioutil.WriteFile(), error = %v", err))
 
-		dm, err := NewDatastoreManager(db_file_path)
-		assert.Nil(err, fmt.Sprintf(":( Error has occured at NewDatastoreManage(), error = %v", err))
+		dm, err2 := NewDatastoreManager(db_file_path)
+		assert.Nil(err2, fmt.Sprintf(":( Error has occured at NewDatastoreManage(), error = %v", err))
 
-		err2 := dm.Restore()
-		assert.Nil(err2, fmt.Sprintf(":( Error has occured at DatastoreManager().Restore(), error = %v", err))
+		err3 := dm.Restore()
+		assert.Nil(err3, fmt.Sprintf(":( Error has occured at DatastoreManager().Restore(), error = %v", err))
 
 		err_msg := "Value of saved in Datastore (key = %v) hasn't equal"
 

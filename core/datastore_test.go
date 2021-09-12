@@ -8,116 +8,43 @@ import (
 )
 
 func TestDatastore_Write(t *testing.T) {
-	assert := assert.New(t)
-	type args struct {
-		key   string
-		value string
-	}
-	tests := []struct {
-		name      string
-		ds        *Datastore
-		args_list []args
-		want      int
-	}{
-		{
-			name: "canWrite",
-			ds:   NewDatastore("test"),
-			args_list: []args{
-				{
-					key:   "hoge",
-					value: "fuga",
-				},
-				{
-					key:   "foo",
-					value: "bar",
-				},
-			},
-			want: 2,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ds := tt.ds
-			for _, args := range tt.args_list {
-				ds.Write(args.key, args.value)
-			}
-			got := ds.Size()
-			assert.Equal(tt.want, got, fmt.Sprintf(":( Datastore.Size() = %v, want %v", got, tt.want))
-		})
-	}
+	t.Run("canWrite", func(t *testing.T) {
+		assert := assert.New(t)
+		ds := NewDatastore("test")
+		ds.Write("hoge", "fuga")
+		ds.Write("foo", "bar")
+		expected := 2
+		assert.Equal(expected, ds.Size(), "Datastore.Size() hasn't equal")
+	})
 }
 
 func TestDatastore_Read(t *testing.T) {
-	assert := assert.New(t)
-	type argAndWant struct {
-		key  string
-		want string
-	}
-	tests := []struct {
-		name         string
-		ds           *Datastore
-		argsAndWants []argAndWant
-	}{
-		{
-			name: "canRead",
-			ds:   NewDatastore("test"),
-			argsAndWants: []argAndWant{
-				{
-					key:  "hoge",
-					want: "fuga",
-				},
-				{
-					key:  "foo",
-					want: "bar",
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ds := tt.ds
-			ds.Write("hoge", "fuga")
-			ds.Write("foo", "bar")
-			for _, argAndWant := range tt.argsAndWants {
-				got := ds.Read(argAndWant.key)
-				assert.Equal(argAndWant.want, got, fmt.Sprintf(":( Datastore.Read() = %v, want %v", got, argAndWant.want))
-			}
-		})
-	}
+	t.Run("canRead", func(t *testing.T) {
+		assert := assert.New(t)
+		ds := NewDatastore("test")
+		ds.Write("hoge", "fuga")
+		ds.Write("foo", "bar")
+
+		err_msg := "Datastore.Read() hasn't expected"
+		assert.Equal("fuga", ds.Read("hoge"), err_msg)
+		assert.Equal("bar", ds.Read("foo"), err_msg)
+	})
 }
 
 func TestDatastore_Delete(t *testing.T) {
-	assert := assert.New(t)
-	type args struct {
-		key string
-	}
-	tests := []struct {
-		name      string
-		ds        *Datastore
-		args      args
-		want_size int
-	}{
-		{
-			name: "canDelete",
-			ds:   NewDatastore("test"),
-			args: args{
-				key: "hoge",
-			},
-			want_size: 1,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ds := tt.ds
-			ds.Write("hoge", "fuga")
-			ds.Write("foo", "bar")
-			ds.Delete("hoge")
-			got := ds.Read(tt.args.key)
-			assert.Empty(got, ":( Datastore.Delete() dosen't work!")
-			got_size := ds.Size()
-			assert.Equal(got_size, tt.want_size, fmt.Sprintf(":( Datastore.Size() = %v, want %v", got_size, tt.want_size))
-		})
-	}
+	t.Run("canDelete", func(t *testing.T) {
+		assert := assert.New(t)
+		ds := NewDatastore("test")
+		ds.Write("hoge", "fuga")
+		ds.Write("foo", "bar")
+
+		key := "hoge"
+		ds.Delete(key)
+		assert.Empty(ds.Read(key), fmt.Sprintf("Datastore.Read() should return empty, key = %v", key))
+
+		expected := 1
+		assert.Equal(expected, ds.Size(), "Datastore.Size() hasn't equal. Datastore.Delete() might not work")
+	})
 }
 
 func TestDatastore_Persisted(t *testing.T) {
