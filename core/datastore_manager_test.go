@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -29,111 +30,69 @@ func TestNewDatastoreManager(t *testing.T) {
 }
 
 func TestDatastoreManager_Persist(t *testing.T) {
-	ds1 := NewDatastore("test1")
-	ds1.Write("hoge", "fuga")
-	ds1.Write("foo", "bar")
-	ds2 := NewDatastore("test2")
-	ds2.Write("baka", "aho")
-	ds2.Write("unko", "brbr")
-	ds2.Write("aaa", "zzz")
-	type fields struct {
-		ds_list []*Datastore
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "canPersistDatabase",
-			fields: fields{
-				ds_list: []*Datastore{ds1, ds2},
-			},
-			want: ds1.Persisted() + ds2.Persisted(),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			dm, err := NewDatastoreManager(db_file_path)
-			if err != nil {
-				t.Errorf(":( Error has occured at NewDatastoreManage(), error = %v", err)
-			}
-			dm.ds_list = tt.fields.ds_list
-			if err := dm.Persist(); err != nil {
-				t.Errorf(":( Error has occured at DatastoreManager().Persist(), error = %v", err)
-				return
-			}
-			bytes, err := ioutil.ReadFile(db_file_path)
-			if err != nil {
-				t.Errorf(":( Error has occured at ioutil.ReadFile(), error = %v", err)
-				return
-			}
-			str := string(bytes)
-			if str != tt.want {
-				t.Errorf(":( File contents has not expected, want = %v, but got = %v", tt.want, str)
-			}
-			defer os.Remove(db_file_path)
-		})
-	}
+	t.Run("canPersistDatabase", func(t *testing.T) {
+		assert := assert.New(t)
+
+		ds1 := NewDatastore("test1")
+		ds1.Write("hoge", "fuga")
+		ds1.Write("foo", "bar")
+		ds2 := NewDatastore("test2")
+		ds2.Write("baka", "aho")
+		ds2.Write("unko", "brbr")
+		ds2.Write("aaa", "zzz")
+
+		dm, err := NewDatastoreManager(db_file_path)
+		assert.Nil(err, "NewDatastoreManager() shouldn't return error")
+
+		dm.AddDatastore(ds1)
+		dm.AddDatastore(ds2)
+		defer os.Remove(db_file_path)
+		err = dm.Persist()
+		assert.Nil(err, "DatastoreManager.Persist() shouldn't return error")
+
+		bytes, err := ioutil.ReadFile(db_file_path)
+		assert.Nil(err, "ioutil.ReadFile has return error")
+
+		actual := string(bytes)
+		expected := ds1.Persisted() + ds2.Persisted()
+		assert.Equal(expected, actual, ":( File contents has not expected")
+	})
 }
 
 func TestDatastoreManager_Restore(t *testing.T) {
-	defer os.Remove(db_file_path)
-	ds1 := NewDatastore("test")
-	ds1.Write("hoge", "fuga")
-	ds1.Write("foo", "bar")
-	ds2 := NewDatastore("test2")
-	ds2.Write("baka", "aho")
-	ds2.Write("unko", "brbr")
-	ds2.Write("aaa", "zzz")
-	tests := []struct {
-		name  string
-		wants []*Datastore
-	}{
-		{
-			name:  "canRestoreDatabaseFromFile",
-			wants: []*Datastore{ds1, ds2},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			buf := []byte("test={hoge=fuga;foo=bar;};test2={baka=aho;unko=brbr;aaa=zzz;};")
-			err := ioutil.WriteFile(db_file_path, buf, os.ModePerm)
-			if err != nil {
-				t.Errorf(":( Error has occured at ioutil.WriteFile(), error = %v", err)
-				return
-			}
-			dm, err := NewDatastoreManager(db_file_path)
-			if err != nil {
-				t.Errorf(":( Error has occured at NewDatastoreManage(), error = %v", err)
-			}
-			if err := dm.Restore(); err != nil {
-				t.Errorf(":( Error has occured at DatastoreManager().Restore(), error = %v", err)
-				return
-			}
-			for _, want := range tt.wants {
-				notMatched := true
-				for _, ds := range dm.ds_list {
-					if ds.name == want.name {
-						notMatched = false
-						for k, v := range ds.store {
-							if want.store[k] != v {
-								t.Errorf(":( DatastoreManager().Rstore() has not expected. key = %v, want = %v, but got = %v", k, want.store[k], v)
-							}
-						}
-					}
-				}
+	t.Run("canRestoreDatabaseFromFile", func(t *testing.T) {
+		assert := assert.New(t)
+		defer os.Remove(db_file_path)
 
-				if notMatched {
-					t.Error(":( Nothing matched! DatastoreManager().Restore() dosen't work. want.name = " + want.name)
-					return
-				}
-			}
-		})
-	}
+		buf := []byte("test={hoge=fuga;foo=bar;};test2={baka=aho;unko=brbr;aaa=zzz;};")
+		err := ioutil.WriteFile(db_file_path, buf, os.ModePerm)
+		assert.Nil(err, fmt.Sprintf(":( Error has occured at ioutil.WriteFile(), error = %v", err))
+
+		dm, err := NewDatastoreManager(db_file_path)
+		assert.Nil(err, fmt.Sprintf(":( Error has occured at NewDatastoreManage(), error = %v", err))
+
+		err2 := dm.Restore()
+		assert.Nil(err2, fmt.Sprintf(":( Error has occured at DatastoreManager().Restore(), error = %v", err))
+
+		err_msg := "Value of saved in Datastore (key = %v) hasn't equal"
+
+		ds_test := dm.GetDatastore("test")
+		assert.NotNil(ds_test, "dm.GetDatastore() shouldn't return nil")
+		assert.Equal("fuga", ds_test.Read("hoge"), fmt.Sprintf(err_msg, "test"))
+		assert.Equal("bar", ds_test.Read("foo"), fmt.Sprintf(err_msg, "test"))
+
+		ds_test2 := dm.GetDatastore("test2")
+		assert.NotNil(ds_test2, "dm.GetDatastore() shouldn't return nil")
+		assert.Equal("aho", ds_test2.Read("baka"), fmt.Sprintf(err_msg, "test2"))
+		assert.Equal("brbr", ds_test2.Read("unko"), fmt.Sprintf(err_msg, "test2"))
+		assert.Equal("zzz", ds_test2.Read("aaa"), fmt.Sprintf(err_msg, "test2"))
+
+		assert.Nil(dm.GetDatastore("test3"), "dm.GetDatastore() should return nil")
+
+	})
 }
 
-func TestDatastoreManager_getDatastore(t *testing.T) {
+func TestDatastoreManager_GetDatastore(t *testing.T) {
 
 	dm := DatastoreManager{}
 
