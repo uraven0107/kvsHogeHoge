@@ -49,24 +49,11 @@ func TestDatastore_Delete(t *testing.T) {
 
 func TestDatastore_Persisted(t *testing.T) {
 	assert := assert.New(t)
-	tests := []struct {
-		name string
-		ds   *Datastore
-		want string
-	}{
-		{
-			name: "canConvertPersisted",
-			ds:   NewDatastore("test"),
-			want: "test={hoge=fuga;foo=bar;};",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ds := tt.ds
-			ds.Write("hoge", "fuga")
-			ds.Write("foo", "bar")
-			got := ds.Persisted()
-			assert.Equal(got, tt.want, fmt.Sprintf(":( Datastore.Persisted() = %v, want %v", got, tt.want))
-		})
-	}
+	t.Run("canPersisted", func(t *testing.T) {
+		ds := NewDatastore("test")
+		ds.Write("hoge", "fuga")
+		ds.Write("foo", "bar")
+		expected := "test={hoge=fuga;foo=bar;};"
+		assert.Equal(expected, ds.Persisted(), "Datastore.Persisted() hasn't equal")
+	})
 }
